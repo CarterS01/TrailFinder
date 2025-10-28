@@ -1,6 +1,8 @@
+import sqlite3
 from flask import Flask, render_template
 
-app = Flask(__name__)
+con = sqlite3.connect("data.db")    #Create a connection to the database
+app = Flask(__name__)               #Create a Flask object
 
 @app.route('/')
 def home():
@@ -20,7 +22,13 @@ def saved_trails():
 
 @app.route('/login')
 def login():
+    with sqlite3.connect("data.db") as con:
+        cur = con.cursor()
     return render_template('login.html')
+
+@app.route('/placeholder')
+def placeholder():
+    return render_template('placeholder.html')
 
 if __name__ == "__main__":
     app.run(debug=True)
