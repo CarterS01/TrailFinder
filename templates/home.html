@@ -3,27 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <title>TrailFinder: Home</title>
+    <link href="static/home.css" rel="stylesheet"/>
+    <link href="static/fonts.css" rel="stylesheet"/>
 </head>
 
 <body>
     <header>
-        <nav>
-            <a href="/login">Login</a>
-        </nav>
+        <ul>
+            <li><a href="/login">LOGIN</a></li>
+        </ul>
     </header>
     <main>
-        <section id="Welcome">
-            <div class="container">
-                <h1>TrailFinder</h1>
-                <p>Spend less time searching and more time riding</p>
-            </div>
-        </section>
+        <div class="welcome">
+            <section id="Welcome">
+                <div class="container">
+                    <h1>TRAILFINDER</h1>
+                    <p>SPEND LESS TIME SEARCHING AND MORE TIME RIDING</p>
+                </div>
+            </section>
+        </div>
 
         <section id="buttons">
             <div class="container">
-                <a href="/find_a_trail">Find A Trail</a>
-                <a href="/recommend_a_trail">Recommend A Trail</a>
-                <a href="/saved_trails">Saved Trails</a>
+                <!--<a href="/find_a_trail">Find A Trail</a>-->
+                <input type="button" value="FIND A TRAIL" onclick="location.href='/find_a_trail'"/>
+                <input type="button" value="RECOMMEND A TRAIL" onclick="location.href='/recommend_a_trail'"/>
+                <input type="button" value="SAVED TRAILS" onclick="location.href='/saved_trails'"/>
             </div>
         </section>
     </main>
