@@ -1,0 +1,57 @@
+body {
+    background-color: #3b4244;
+}
+
+header, main {
+    text-align: center;
+    font-family: "Unica One";
+    color: white;
+    padding: 1%;
+}
+
+h2 {
+    font-size: 300%;
+    margin-top: 1.2em;
+    margin-bottom: 1em;
+}
+
+p {
+    font-size: 125%;
+}
+
+hr {
+    height: 4px;
+    background-color: black;
+    border-color: #3b4244;
+    overflow: hidden;
+}
+
+select {
+    font-family: "Unica One";
+    font-size: 115%;
+    width: 10%;
+}
+
+.dropdowns {
+    margin-bottom: 3.5em;
+}
+
+.checkboxes {
+    margin-bottom: 1.5em;
+}
+
+input {
+    font-family: "Unica One";
+    background-color: #41c4f3;
+    border-color: white;
+    padding: .5em;
+    font-size: 120%;
+}
+
+label {
+    font-size: 120%;
+}
+
+input:hover {
+    background-color: #6ad5fc;
+}

@@ -9,9 +9,12 @@
 
 <body>
     <header>
-        <ul>
-            <li><a href="/login">LOGIN</a></li>
-        </ul>
+        <div class="topbar">
+        <!--<img src="/static/images/TF Logo.png" alt="The TrailFinder logo.">-->
+            <ul>
+                <li><a href="/login">LOGIN</a></li>
+            </ul>
+        </div>
     </header>
     <main>
         <div class="welcome">
@@ -25,7 +28,6 @@
 
         <section id="buttons">
             <div class="container">
-                <!--<a href="/find_a_trail">Find A Trail</a>-->
                 <input type="button" value="FIND A TRAIL" onclick="location.href='/find_a_trail'"/>
                 <input type="button" value="RECOMMEND A TRAIL" onclick="location.href='/recommend_a_trail'"/>
                 <input type="button" value="SAVED TRAILS" onclick="location.href='/saved_trails'"/>
