@@ -9,6 +9,10 @@ header, main {
     padding: 1%;
 }
 
+input {
+    margin-bottom: .75em;
+}
+
 h2 {
     font-size: 300%;
     margin-top: 1.2em;

@@ -3,4 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <title>TrailFinder: Login</title>
+    <link href="static/forms.css" rel="stylesheet"/>
+    <link href="static/fonts.css" rel="stylesheet"/>
 </head>
+<body>
+    <main>
+        <h2>LOGIN</h2>
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            <p>
+                {{ form.username.label }}<br>
+                {{ form.username(size=20) }}
+            </p>
+            <p>
+                {{ form.password.label }}<br>
+                {{ form.password(size=20) }}
+            </p>
+            <p>
+                {{ form.submit() }}
+            </p>
+        </form>
+    </main>
+</body>
