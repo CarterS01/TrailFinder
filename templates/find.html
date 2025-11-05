@@ -8,42 +8,35 @@
 </head>
 
 <body>
-    <header>
-        <h2>FIND A TRAIL</h2>
-        <input type="text" id="location" placeholder="ENTER YOUR LOCATION">
-    </header>
     <main>
-        <hr class="solid">
-        <div class="dropdowns">
-            <p>TRAIL TERRAIN</p>
-            <select>
-                <option value="flow">FLOWY</option>
-                <option value="tech">TECHNICAL</option>
-                <option value="none">NO PREFERENCE</option>
-            </select>
-            <p>TRAIL TYPE</p>
-            <select>
-                <option value="up">UPHILL</option>
-                <option value="down">DOWNHILL</option>
-                <option value="both">BOTH</option>
-                <option value="none">NO PREFERENCE</option>
-            </select>
-        </div>
-
-        <div class="checkboxes">
+        <h2>FIND A TRAIL</h2>
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            <p>
+                {{ form.location.label }}<br>
+                {{ form.location(size=20) }}
+            </p>
             <hr class="solid">
-            <p>SELECT THE FEATURES YOU WOULD LIKE:</p>
-            <input type="checkbox" id="jumps">
-            <label for="jumps">JUMPS</label><br>
-            <input type="checkbox" id="berms">
-            <label for="berms">BERMS</label><br>
-            <input type="checkbox" id="drops">
-            <label for="drops">DROPS</label><br>
-            <input type="checkbox" id="rolls">
-            <label for="rolls">ROCK ROLLS</label><br>
-            <input type="checkbox" id="skinnies">
-            <label for="skinnies">SKINNIES</label><br>
-        </div>
-        <input type="button" value="SEARCH" onclick="location.href='/placeholder'"/>
+            <p>
+                {{ form.terrain.label }}<br>
+                {{ form.terrain() }}
+            </p>
+            <p>
+                {{ form.type.label }}<br>
+                {{ form.type() }}
+            </p>
+
+            
+            <hr class="solid">
+            <h3>SELECT THE FEATURES YOU WOULD LIKE:</h3>
+            <div class="checkboxes">
+                <p>{{ form.jumps }} {{ form.jumps.label }}</p>
+                <p>{{ form.berms }} {{ form.berms.label }}</p>
+                <p>{{ form.drops }} {{ form.drops.label }}</p>
+                <p>{{ form.rolls }} {{ form.rolls.label }}</p>
+                <p>{{ form.skinnies }} {{ form.skinnies.label }}</p>
+            </div>
+            <p>{{ form.submit() }}</p>
+        </form>
     </main>
 </body>

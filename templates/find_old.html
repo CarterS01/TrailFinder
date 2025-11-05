@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TrailFinder: Find A Trail</title>
+    <link href="static/forms.css" rel="stylesheet"/>
+    <link href="static/fonts.css" rel="stylesheet"/>
+</head>
+
+<body>
+    <header>
+        <h2>FIND A TRAIL</h2>
+        <input type="text" id="location" placeholder="ENTER YOUR LOCATION">
+    </header>
+    <main>
+        <hr class="solid">
+        <div class="dropdowns">
+            <p>TRAIL TERRAIN</p>
+            <select>
+                <option value="flow">FLOWY</option>
+                <option value="tech">TECHNICAL</option>
+                <option value="none">NO PREFERENCE</option>
+            </select>
+            <p>TRAIL TYPE</p>
+            <select>
+                <option value="up">UPHILL</option>
+                <option value="down">DOWNHILL</option>
+                <option value="both">BOTH</option>
+                <option value="none">NO PREFERENCE</option>
+            </select>
+        </div>
+
+        <div class="checkboxes">
+            <hr class="solid">
+            <p>SELECT THE FEATURES YOU WOULD LIKE:</p>
+            <input type="checkbox" id="jumps">
+            <label for="jumps">JUMPS</label><br>
+            <input type="checkbox" id="berms">
+            <label for="berms">BERMS</label><br>
+            <input type="checkbox" id="drops">
+            <label for="drops">DROPS</label><br>
+            <input type="checkbox" id="rolls">
+            <label for="rolls">ROCK ROLLS</label><br>
+            <input type="checkbox" id="skinnies">
+            <label for="skinnies">SKINNIES</label><br>
+        </div>
+        <input type="button" value="SEARCH" onclick="location.href='/placeholder'"/>
+    </main>
+</body>

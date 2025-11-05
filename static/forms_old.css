@@ -9,19 +9,18 @@ header, main {
     padding: 1%;
 }
 
+input {
+    margin-bottom: .75em;
+}
+
 h2 {
     font-size: 300%;
     margin-top: 1.2em;
     margin-bottom: 1em;
 }
 
-h3 {
-    font-size: 150%;
-    font-weight: 100;
-}
-
 p {
-    font-size: 120%;
+    font-size: 125%;
 }
 
 hr {
@@ -29,6 +28,20 @@ hr {
     background-color: black;
     border-color: #3b4244;
     overflow: hidden;
+}
+
+select {
+    font-family: "Unica One";
+    font-size: 115%;
+    width: 10%;
+}
+
+.dropdowns {
+    margin-bottom: 3.5em;
+}
+
+.checkboxes {
+    margin-bottom: 1.5em;
 }
 
 input {
@@ -41,10 +54,6 @@ input {
 
 label {
     font-size: 120%;
-}
-
-div p {
-    font-size: 100%;
 }
 
 input:hover {
