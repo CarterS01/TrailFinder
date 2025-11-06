@@ -1,6 +1,7 @@
 import sqlite3
 from flask import Flask, render_template
 from login import *
+from register import *
 from find import *
 import bcrypt
 
@@ -92,6 +93,19 @@ def login():
             return render_template('login.html', error="User not found!", form=form)
         
     return render_template('login.html', form=form)
+
+@app.route('/register', methods=["GET", "POST"])
+def register():
+    form = regForm()
+
+    return render_template('register.html', form=form)
+
+    if form.validate_on_submit():
+        username = form.username.data
+        password = form.password.data
+
+        with sqlite3.connect("data.db") as con:
+            cur = con.cursor()
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>TrailFinder: Home</title>
+    <link rel="icon" type="image/x-icon" href="/static/images/favicon.ico"/>
     <link href="static/home.css" rel="stylesheet"/>
     <link href="static/fonts.css" rel="stylesheet"/>
 </head>
@@ -10,8 +11,8 @@
 <body>
     <header>
         <div class="topbar">
-        <!--<img src="/static/images/TF Logo.png" alt="The TrailFinder logo.">-->
             <ul>
+                <li><a href="/register">REGISTER</a></li>
                 <li><a href="/login">LOGIN</a></li>
             </ul>
         </div>
@@ -20,6 +21,7 @@
         <div class="welcome">
             <section id="Welcome">
                 <div class="container">
+                    <img src="/static/images/TF Logo.png" alt="The TrailFinder logo.">
                     <h1>TRAILFINDER</h1>
                     <p>SPEND LESS TIME SEARCHING AND MORE TIME RIDING</p>
                 </div>
@@ -33,5 +35,6 @@
                 <input type="button" value="SAVED TRAILS" onclick="location.href='/saved_trails'"/>
             </div>
         </section>
+        
     </main>
 </body>
