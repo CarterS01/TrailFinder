@@ -98,14 +98,37 @@ def login():
 def register():
     form = regForm()
 
-    return render_template('register.html', form=form)
-
     if form.validate_on_submit():
         username = form.username.data
         password = form.password.data
 
+        password = password.encode('utf-8')                     # Convert to format for bcrypt
+        hashed = bcrypt.hashpw(password, bcrypt.gensalt())      # Hash password using generated salt
+
         with sqlite3.connect("data.db") as con:
             cur = con.cursor()
+
+        cur.execute(''' SELECT username
+                        FROM users
+                        WHERE username=?''',
+                        (username,))
+        
+        if cur.fetchone():      # If a user is found with that username
+            form.username.data = ' '
+            cur.close()
+            return render_template('register.html', error="Username already taken!", form=form)
+        
+        # Insert the new user into the database 
+        cur.execute(''' INSERT INTO users(username, pw_hash)
+                        VALUES(?,?)''',
+                        (username, hashed.decode('utf-8')))
+        con.commit()
+
+        cur.close()
+
+        return render_template('home.html', form=form)
+
+    return render_template('register.html', form=form)
 
 if __name__ == "__main__":
     app.run(debug=True)
