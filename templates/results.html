@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TrailFinder: Find A Trail</title>
+    <link rel="icon" type="image/x-icon" href="/static/images/favicon.ico"/>
+    <link href="static/home.css" rel="stylesheet"/>
+    <link href="static/fonts.css" rel="stylesheet"/>
+</head>
+
+<body>
+    <main>
+        <div class="container">
+            {% if trails: %}
+                <h2>RESULTS:</h2>
+                {% for x in trails %}
+                    <p>TRAIL NAME: {{ x[0].upper() }} LOCATION: {{ x[1].upper() }} SCORE: {{ x[2] }}/8</p>
+                {% endfor %}
+            {% else: %}
+                <p>NO TRAILS FOUND MATCHING YOUR CRITERIA</p>
+            {% endif %}
+        </div>
+    </main>
+</body>
+
+<!---Test search that should yield no results: 
+     Terrain: Flowy
+     Type: Uphill
+     Difficulty: Black
+     No Jumps
+     No Berms
+     No Drops
+     Yes Rolls
+     Yes Skinnies--->

@@ -20,14 +20,51 @@ def find_a_trail():
         location = form.location.data
         terrain = form.terrain.data
         type = form.type.data
+        difficulty = form.difficulty.data
         jumps = form.jumps.data
-        berms = form.berms.data
         drops = form.drops.data
+        berms = form.berms.data
         rolls = form.rolls.data
         skinnies = form.skinnies.data
         # Print statement for testing purposes
-        print(f'Location: {location}\nTerrain: {terrain}\nType: {type}\nJumps: {jumps}\nBerms: {berms}\nDrops: {drops}\nRolls: {rolls}\nSkinnies: {skinnies}')
-        return render_template('placeholder.html')
+        #print(f'Location: {location}\nTerrain: {terrain}\nType: {type}\nJumps: {jumps}\nBerms: {berms}\nDrops: {drops}\nRolls: {rolls}\nSkinnies: {skinnies}')
+        passedTrails = []    # List that will later store which trails passed the trailscore test
+
+        with sqlite3.connect("data.db") as con:
+            cur = con.cursor()
+
+        cur.execute(''' SELECT *
+                        FROM trails''')
+        
+        for row in cur:
+            trailscore = 0
+            id1, name1, loc1, locname1, terrain1, type1, difficulty1, jumps1, drops1, berms1, rolls1, skinnies1 = row
+            # Print statement for testing purposes
+            #print(f'Name: {name1}\nTerrain: {terrain1}\nType: {type1}\nDifficulty: {difficulty1}\nJumps: {jumps1}\nBerms: {berms1}\nDrops: {drops1}\nRolls: {rolls1}\nSkinnies: {skinnies1}')
+            
+            # Check each condition, award a point to the trail if it matches
+            if terrain == terrain1 or terrain == '*':
+                trailscore += 1
+            if type == type1 or type == '*':
+                trailscore += 1
+            if difficulty == difficulty1 or difficulty == '*':
+                trailscore +=1
+            if jumps == jumps1:
+                trailscore +=1
+            if drops == drops1:
+                trailscore += 1
+            if berms == berms1:
+                trailscore += 1
+            if rolls == rolls1:
+                trailscore += 1
+            if skinnies == skinnies1:
+                trailscore += 1
+            # Adds trail to a list if its trailscore is 6 or more. 
+            if trailscore > 5:
+                trailData = (name1, locname1, trailscore)
+                passedTrails.append(trailData)
+
+        return render_template('results.html', trails=passedTrails)
     return render_template('find.html', form=form)
 
 @app.route('/recommend_a_trail')

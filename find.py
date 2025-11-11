@@ -6,6 +6,7 @@ class findForm(FlaskForm):
     location = StringField('ZIP CODE', validators=[DataRequired()])
     terrain = SelectField('TRAIL TERRAIN', choices=[('flow','FLOWY'), ('tech','TECHNICAL'), ('*','NO PREFERENCE')])
     type = SelectField('TRAIL TYPE', choices=[('up','UPHILL'), ('down','DOWNHILL'), ('both','BOTH'), ('*','NO PREFERENCE')])
+    difficulty = SelectField('DIFFICULTY', choices=[('green','GREEN'), ('blue','BLUE'), ('black','BLACK'), ('*','NO PREFERENCE')])
     jumps = BooleanField('JUMPS')
     berms = BooleanField('BERMS')
     drops = BooleanField('DROPS')
