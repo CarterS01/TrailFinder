@@ -1,13 +1,19 @@
+#--- PYTHON MODULES ---
 import sqlite3
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect, url_for
+from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
+import bcrypt
+#--- .py FILES ---
 from login import *
 from register import *
 from find import *
-import bcrypt
+from user import *
 
 con = sqlite3.connect("data.db")    #Create a connection to the database
 app = Flask(__name__)               #Create a Flask object
 app.config['SECRET_KEY'] = 'placeholder'
+login_manager = LoginManager()
+login_manager.login_view = 'app.login'
 
 @app.route('/')
 def home():
@@ -163,7 +169,8 @@ def register():
 
         cur.close()
 
-        return render_template('home.html', form=form)
+        return redirect(url_for('login'))
+        #return render_template('home.html', form=form)
 
     return render_template('register.html', form=form)
 
