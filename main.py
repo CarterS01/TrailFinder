@@ -44,6 +44,7 @@ def find_a_trail():
         
         for row in cur:
             trailscore = 0
+            differences = []    # List to keep track of which features vary from user's input.
             id1, name1, loc1, locname1, terrain1, type1, difficulty1, jumps1, drops1, berms1, rolls1, skinnies1 = row
             # Print statement for testing purposes
             #print(f'Name: {name1}\nTerrain: {terrain1}\nType: {type1}\nDifficulty: {difficulty1}\nJumps: {jumps1}\nBerms: {berms1}\nDrops: {drops1}\nRolls: {rolls1}\nSkinnies: {skinnies1}')
@@ -54,9 +55,9 @@ def find_a_trail():
             if type == type1 or type == '*':
                 trailscore += 1
             if difficulty == difficulty1 or difficulty == '*':
-                trailscore +=1
+                trailscore += 1
             if jumps == jumps1:
-                trailscore +=1
+                trailscore += 1
             if drops == drops1:
                 trailscore += 1
             if berms == berms1:
@@ -65,9 +66,16 @@ def find_a_trail():
                 trailscore += 1
             if skinnies == skinnies1:
                 trailscore += 1
+            # Set image path based on trail difficulty
+            if difficulty1 == 'green':
+                difficulty1 = '/static/images/green.png'
+            elif difficulty1 == 'blue':
+                difficulty1 = '/static/images/blue.png'
+            else:
+                difficulty1 = '/static/images/black.png'
             # Adds trail to a list if its trailscore is 6 or more. 
             if trailscore > 5:
-                trailData = (name1, locname1, trailscore)
+                trailData = (name1, locname1, trailscore, difficulty1, loc1)
                 passedTrails.append(trailData)
 
         return render_template('results.html', trails=passedTrails)

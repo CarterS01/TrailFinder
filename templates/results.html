@@ -13,8 +13,13 @@
         <div class="container">
             {% if trails: %}
                 <h2>RESULTS:</h2>
+                <hr>
                 {% for x in trails %}
-                    <p>TRAIL NAME: {{ x[0].upper() }} LOCATION: {{ x[1].upper() }} SCORE: {{ x[2] }}/8</p>
+                    <div class="trail">
+                        <p><u>TRAIL NAME: {{ x[0].upper() }}</u> <img src='{{ x[3] }}' alt="Difficulty rating."></p>
+                        <p>LOCATION: {{ x[1].upper() }} ({{ x[4] }})<br>SCORE: {{ x[2] }}/8<br></p>
+                    </div>
+                    <hr>
                 {% endfor %}
             {% else: %}
                 <p>NO TRAILS FOUND MATCHING YOUR CRITERIA</p>

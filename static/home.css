@@ -7,6 +7,14 @@ body {
     font-family: "Unica One";
 }
 
+.welcome {
+    padding: 8%;
+}
+
+.trail {
+    padding: 2%;
+}
+
 h1 {
     margin-top: 4%;
     margin-bottom: 0%;
@@ -15,7 +23,7 @@ h1 {
 }
 
 h2 {
-    font-size: 300%;
+    font-size: 350%;
     margin-top: 1.2em;
     margin-bottom: 1em;
     color: white;
@@ -23,9 +31,15 @@ h2 {
 
 p {
     margin-top: 0%;
-    margin-bottom: 12%;
     font-size: 125%;
     color: white;
+}
+
+hr {
+    height: 4px;
+    background-color: black;
+    border-color: #3b4244;
+    overflow: hidden;
 }
 
 ul {
@@ -41,12 +55,10 @@ ul li {
 }
 
 img {
-    display: block;
-    width: 11%;
-    height: 11%;
-    padding: .5%;
-    margin-left: auto;
-    margin-right: auto;
+    display: inline;
+    width: .9em;
+    height: .9em;
+    padding: 0%;
 }
 
 ul li a {
