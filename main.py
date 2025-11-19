@@ -3,6 +3,7 @@ import sqlite3
 from flask import Flask, render_template, redirect, url_for
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 import bcrypt
+import pgeocode as pgeo
 #--- .py FILES ---
 from login import *
 from register import *
@@ -24,6 +25,7 @@ def find_a_trail():
     form = findForm()
     if form.validate_on_submit():
         location = form.location.data
+        radius = float(form.radius.data)
         terrain = form.terrain.data
         type = form.type.data
         difficulty = form.difficulty.data
@@ -44,7 +46,6 @@ def find_a_trail():
         
         for row in cur:
             trailscore = 0
-            differences = []    # List to keep track of which features vary from user's input.
             id1, name1, loc1, locname1, terrain1, type1, difficulty1, jumps1, drops1, berms1, rolls1, skinnies1 = row
             # Print statement for testing purposes
             #print(f'Name: {name1}\nTerrain: {terrain1}\nType: {type1}\nDifficulty: {difficulty1}\nJumps: {jumps1}\nBerms: {berms1}\nDrops: {drops1}\nRolls: {rolls1}\nSkinnies: {skinnies1}')
@@ -73,13 +74,23 @@ def find_a_trail():
                 difficulty1 = '/static/images/blue.png'
             else:
                 difficulty1 = '/static/images/black.png'
-            # Adds trail to a list if its trailscore is 6 or more. 
-            if trailscore > 5:
+            # Pass zip codes to calc_distance to determine how far they are from each other
+            distance = calc_distance(location, loc1)
+            # Adds trail to a list if its trailscore is 6 or more and the trail is within user's specified radius
+            if trailscore > 5 and distance < radius:
                 trailData = (name1, locname1, trailscore, difficulty1, loc1)
                 passedTrails.append(trailData)
 
         return render_template('results.html', trails=passedTrails)
     return render_template('find.html', form=form)
+
+# Function to calculate the distance between zip codes
+def calc_distance(userCode, trailCode):
+    search = pgeo.GeoDistance('US')
+    distance = search.query_postal_code(userCode, trailCode)
+    distance *= 0.6213712   # Convert km to mi
+    return distance
+
 
 @app.route('/recommend_a_trail')
 def recommend_a_trail():
