@@ -7,6 +7,20 @@ body {
     font-family: "Unica One";
 }
 
+.bgVid {
+    position: fixed;
+    width: 100%;
+    width: 100%;
+    z-index: -1;
+    opacity: .35;
+    overflow: hidden;
+}
+
+.bgVid video {
+    min-width: 100%;
+    min-height: 100%;
+}
+
 .welcome {
     padding: 8%;
     margin-bottom:2%;
