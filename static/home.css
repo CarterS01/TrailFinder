@@ -69,7 +69,7 @@ ul li {
     float: right;
 }
 
-img {
+.trail img {
     display: inline;
     width: .9em;
     height: .9em;

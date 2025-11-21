@@ -1,9 +1,30 @@
-from flask_login import LoginManager, UserMixin, login_required, login_user, logout_user, current_user
+class User:
+    def __init__(self, id, username):
+        self._id = id
+        self._username = username
+        self._authenticated = False
 
-class User(UserMixin):
-    def __init__(self, id, username, password):
-        self.id = id
-        self.username = username
-        self.password = password
-        self.authenticated = False
+    @property
+    def auth(self):
+        return self._authenticated
+
+    @auth.setter
+    def auth(self, auth_stat):
+        self._authenticated = auth_stat
+
+    @property
+    def id(self):
+        return self._id
+    
+    @id.setter
+    def id(self, id):
+        self._id = id
+
+    @property
+    def username(self):
+        return self._username
+
+    @username.setter
+    def username(self, username):
+        self._username = username
     

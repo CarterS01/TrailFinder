@@ -12,8 +12,12 @@
     <header>
         <div class="topbar">
             <ul>
-                <li><a href="/register">REGISTER</a></li>
-                <li><a href="/login">LOGIN</a></li>
+                {% if user.auth == False: %}
+                    <li><a href="/register">REGISTER</a></li>
+                    <li><a href="/login">LOGIN</a></li>
+                {% else: %}
+                    <li><a href="/logout" onclick="logout(user)">LOGOUT</a></li>
+                {% endif %}
             </ul>
         </div>
     </header>
@@ -26,7 +30,6 @@
         <div class="welcome">
             <section id="Welcome">
                 <div class="container">
-                    <!---<img src="/static/images/TF Logo.png" alt="The TrailFinder logo.">--->
                     <h1>TRAILFINDER</h1>
                     <p>SPEND LESS TIME SEARCHING AND MORE TIME RIDING</p>
                 </div>

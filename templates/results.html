@@ -16,8 +16,7 @@
                 <hr>
                 {% for x in trails %}
                     <div class="trail">
-                        <!--- TO DO!!!!!! Make this alt text dynamic to specify the difficulty rating-->
-                        <p><u>TRAIL NAME: {{ x[0].upper() }}</u> <img src='{{ x[3] }}' alt="Difficulty rating."></p>
+                        <p><u>TRAIL NAME: {{ x[0].upper() }}</u> <img src='{{ x[3] }}' alt='{{ x[5] }}'></p>
                         <p>LOCATION: {{ x[1].upper() }} ({{ x[4] }})<br>SCORE: {{ x[2] }}/8<br></p>
                     </div>
                     <hr>

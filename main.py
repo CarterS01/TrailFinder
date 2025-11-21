@@ -1,7 +1,6 @@
 #--- PYTHON MODULES ---
 import sqlite3
 from flask import Flask, render_template, redirect, url_for
-from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 import bcrypt
 import pgeocode as pgeo
 #--- .py FILES ---
@@ -13,12 +12,11 @@ from user import *
 con = sqlite3.connect("data.db")    #Create a connection to the database
 app = Flask(__name__)               #Create a Flask object
 app.config['SECRET_KEY'] = 'placeholder'
-login_manager = LoginManager()
-login_manager.login_view = 'app.login'
+user = User(None, None)
 
 @app.route('/')
 def home():
-    return render_template('home.html')
+    return render_template('home.html', user=user)
 
 @app.route('/find_a_trail', methods=["GET", "POST"])
 def find_a_trail():
@@ -34,8 +32,6 @@ def find_a_trail():
         berms = form.berms.data
         rolls = form.rolls.data
         skinnies = form.skinnies.data
-        # Print statement for testing purposes
-        #print(f'Location: {location}\nTerrain: {terrain}\nType: {type}\nJumps: {jumps}\nBerms: {berms}\nDrops: {drops}\nRolls: {rolls}\nSkinnies: {skinnies}')
         passedTrails = []    # List that will later store which trails passed the trailscore test
 
         with sqlite3.connect("data.db") as con:
@@ -47,8 +43,6 @@ def find_a_trail():
         for row in cur:
             trailscore = 0
             id1, name1, loc1, locname1, terrain1, type1, difficulty1, jumps1, drops1, berms1, rolls1, skinnies1 = row
-            # Print statement for testing purposes
-            #print(f'Name: {name1}\nTerrain: {terrain1}\nType: {type1}\nDifficulty: {difficulty1}\nJumps: {jumps1}\nBerms: {berms1}\nDrops: {drops1}\nRolls: {rolls1}\nSkinnies: {skinnies1}')
             
             # Check each condition, award a point to the trail if it matches
             if terrain == terrain1 or terrain == '*':
@@ -70,15 +64,18 @@ def find_a_trail():
             # Set image path based on trail difficulty
             if difficulty1 == 'green':
                 difficulty1 = '/static/images/green.png'
+                altText = 'Green difficulty icon'
             elif difficulty1 == 'blue':
                 difficulty1 = '/static/images/blue.png'
+                altText = 'Blue difficulty icon'
             else:
                 difficulty1 = '/static/images/black.png'
+                altText = 'Black difficulty icon'
             # Pass zip codes to calc_distance to determine how far they are from each other
             distance = calc_distance(location, loc1)
             # Adds trail to a list if its trailscore is 6 or more and the trail is within user's specified radius
             if trailscore > 5 and distance < radius:
-                trailData = (name1, locname1, trailscore, difficulty1, loc1)
+                trailData = (name1, locname1, trailscore, difficulty1, loc1, altText)
                 passedTrails.append(trailData)
 
         return render_template('results.html', trails=passedTrails)
@@ -138,8 +135,14 @@ def login():
             # If entered password is successfully matched to hash
             # Args need to be encoded for bcrypt format
             if bcrypt.checkpw(password.encode('utf-8'), res.encode('utf-8')):
+                cur.execute(''' SELECT id
+                                FROM users
+                                WHERE username=?''',
+                                (username,))
+                id = cur.fetchall()
                 cur.close()
-                return render_template('home.html')
+                login_user(id, username, user)
+                return render_template('home.html', user=user)
             # If entered password does not match hash
             else:
                 cur.close()
@@ -155,6 +158,18 @@ def login():
             return render_template('login.html', error="User not found!", form=form)
         
     return render_template('login.html', form=form)
+
+def login_user(id, username, user):
+    user.id = id
+    user.username = username
+    user.auth = True
+
+@app.route('/logout', methods=["GET", "POST"])
+def logout(user):
+    user.id = None
+    user.username = None
+    user.auth = False
+    return render_template('home.html', user=user)
 
 @app.route('/register', methods=["GET", "POST"])
 def register():
@@ -186,10 +201,18 @@ def register():
                         (username, hashed.decode('utf-8')))
         con.commit()
 
+        cur.execute(''' SELECT id
+                        FROM users
+                        WHERE username=?''',
+                        (username,))
+        
+        id = cur.fetchall()
+
+        login_user(id, username, user)
+
         cur.close()
 
-        return redirect(url_for('login'))
-        #return render_template('home.html', form=form)
+        return render_template('home.html', user=user)
 
     return render_template('register.html', form=form)
 
