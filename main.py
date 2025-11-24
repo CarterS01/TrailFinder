@@ -148,14 +148,14 @@ def login():
                 cur.close()
                 form.username.data = ''
                 form.password.data = ''
-                return render_template('login.html', error="Incorrect password!", form=form)
+                return render_template('login.html', error="ERROR: INCORRECT PASSWORD", form=form)
 
         # If no record matching user is found  
         else:
             cur.close()
             form.username.data = ''
             form.password.data = ''
-            return render_template('login.html', error="User not found!", form=form)
+            return render_template('login.html', error="ERROR: USER NOT FOUND", form=form)
         
     return render_template('login.html', form=form)
 
@@ -193,7 +193,7 @@ def register():
         if cur.fetchone():      # If a user is found with that username
             form.username.data = ' '
             cur.close()
-            return render_template('register.html', error="Username already taken!", form=form)
+            return render_template('register.html', error="ERROR: USERNAME ALREADY EXISTS", form=form)
         
         # Insert the new user into the database 
         cur.execute(''' INSERT INTO users(username, pw_hash)

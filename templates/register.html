@@ -21,6 +21,11 @@
                 {{ form.password.label }}<br>
                 {{ form.password(size=20) }}
             </p>
+            <div class="error">
+                {% if error: %}
+                    <p>{{ error }}</p>
+                {% endif %}
+            </div>
             <p>{{ form.submit() }}</p>
         </form>
     </main>

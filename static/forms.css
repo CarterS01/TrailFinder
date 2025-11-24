@@ -24,6 +24,12 @@ p {
     font-size: 120%;
 }
 
+.error {
+    background-color: red;
+    width: 18em;
+    margin: auto;
+}
+
 hr {
     height: 4px;
     background-color: black;
