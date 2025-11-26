@@ -45,11 +45,11 @@ def find_a_trail():
             id1, name1, loc1, locname1, terrain1, type1, difficulty1, jumps1, drops1, berms1, rolls1, skinnies1 = row
             
             # Check each condition, award a point to the trail if it matches
-            if terrain == terrain1 or terrain == '*':
+            if terrain == terrain1 or terrain == 'terr_no':
                 trailscore += 1
-            if type == type1 or type == '*':
+            if type == type1 or type == 'type_no':
                 trailscore += 1
-            if difficulty == difficulty1 or difficulty == '*':
+            if difficulty == difficulty1 or difficulty == 'diff_no':
                 trailscore += 1
             if jumps == jumps1:
                 trailscore += 1
@@ -78,9 +78,45 @@ def find_a_trail():
                 trailData = (name1, locname1, trailscore, difficulty1, loc1, altText)
                 passedTrails.append(trailData)
 
+        # If user is logged in, call function to update their preferences
+        if user.auth == True:
+            print('This should be working')
+            update_prefs(user, terrain, type, difficulty)
+
         return render_template('results.html', trails=passedTrails)
     return render_template('find.html', form=form)
 
+# Function to update user preferences based on their Find A Trail searches
+def update_prefs(user, terrain, type, difficulty):
+    
+    with sqlite3.connect('data.db') as con:
+        cur = con.cursor()
+
+    id = user.id
+
+    print(terrain, type, difficulty, id)
+
+    # Update preference based on chosen terrain
+    cur.execute(''' UPDATE preference
+                    SET ? = ? + 1
+                    WHERE user_id=?''',
+                    (terrain, terrain, id))
+    con.commit()
+    # Update preferences based on chosen trail type
+    cur.execute(''' UPDATE preference
+                    SET ? = ? + 1
+                    WHERE user_id=?''',
+                    (type, type, id))
+    con.commit()
+    # Update preferences based on chosen difficulty
+    cur.execute(''' UPDATE preference
+                    SET ? = ? + 1
+                    WHERE user_id=?''',
+                    (difficulty, difficulty, id))
+    con.commit()
+
+    cur.close()
+    
 # Function to calculate the distance between zip codes
 def calc_distance(userCode, trailCode):
     search = pgeo.GeoDistance('US')
@@ -119,17 +155,19 @@ def login():
             hashed = bcrypt.hashpw(newPass, bcrypt.gensalt())   # Hash the password using a generated salt
 
             # Open another cursor to fetch stored password hash
-            with sqlite3.connect("data.db") as con:
-                cur2 = con.cursor()
+            #with sqlite3.connect("data.db") as con:
+                #cur2 = con.cursor()
 
             # Search users table in database to retrieve hashed password corresponding with username
-            cur2.execute('''SELECT pw_hash
+            # CHANGE BACK TO CUR2 IF SOMETHING BREAKS
+            cur.execute('''SELECT pw_hash
                             FROM users
                             WHERE username=?''',
                             (username,))
 
-            hashed = cur2.fetchall()               # Store the hashed password
-            cur2.close()
+            # CHANGE BACK TO CUR2 IF SOMETHING BREAKS
+            hashed = cur.fetchall()               # Store the hashed password
+            #cur2.close()
             res = str(hashed).strip('[](),\'')     # Strip unnecessary characters off of password, otherwise it will not match in checkpw
 
             # If entered password is successfully matched to hash
@@ -165,7 +203,7 @@ def login_user(id, username, user):
     user.auth = True
 
 @app.route('/logout', methods=["GET", "POST"])
-def logout(user):
+def logout():
     user.id = None
     user.username = None
     user.auth = False
@@ -201,14 +239,21 @@ def register():
                         (username, hashed.decode('utf-8')))
         con.commit()
 
+        # Get the newly created user's ID to pass into login_user() and the preferences INSERT statement
         cur.execute(''' SELECT id
                         FROM users
                         WHERE username=?''',
                         (username,))
         
-        id = cur.fetchall()
+        # Create a table in preferences for the user
+        id = cur.fetchone()
 
-        login_user(id, username, user)
+        cur.execute(''' INSERT INTO preference (user_id)
+                        VALUES (?)''',
+                        (id))
+        con.commit()
+
+        login_user(id, username, user)     # Log the user in automatically upon registration
 
         cur.close()
 
