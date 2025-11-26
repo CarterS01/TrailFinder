@@ -92,27 +92,27 @@ def update_prefs(user, terrain, type, difficulty):
     with sqlite3.connect('data.db') as con:
         cur = con.cursor()
 
-    id = user.id
+    id = str(user.id).strip('(,)')   # Convert tuple to string and remove extra characters. I have no idea why this returns as a tuple in the first place
 
     print(terrain, type, difficulty, id)
 
     # Update preference based on chosen terrain
     cur.execute(''' UPDATE preference
-                    SET ? = ? + 1
-                    WHERE user_id=?''',
-                    (terrain, terrain, id))
+                    SET %s = %s + 1
+                    WHERE user_id=?''' %
+                    (terrain, terrain), (id,))
     con.commit()
     # Update preferences based on chosen trail type
     cur.execute(''' UPDATE preference
-                    SET ? = ? + 1
-                    WHERE user_id=?''',
-                    (type, type, id))
+                    SET %s = %s + 1
+                    WHERE user_id=?''' %
+                    (type, type), (id,))
     con.commit()
     # Update preferences based on chosen difficulty
     cur.execute(''' UPDATE preference
-                    SET ? = ? + 1
-                    WHERE user_id=?''',
-                    (difficulty, difficulty, id))
+                    SET %s = %s + 1
+                    WHERE user_id=?''' %
+                    (difficulty, difficulty), (id,))
     con.commit()
 
     cur.close()
@@ -149,25 +149,18 @@ def login():
                         WHERE username=?''',
                         (username,))
             
-        if cur.fetchone():     # Skips to else if no user matches, as cur.fethone() will return None
+        if cur.fetchone():     # Returns None if no matching username is found
 
             newPass = password.encode('utf-8')                  # Convert password into format accepted by bcrypt (b'password')
             hashed = bcrypt.hashpw(newPass, bcrypt.gensalt())   # Hash the password using a generated salt
 
-            # Open another cursor to fetch stored password hash
-            #with sqlite3.connect("data.db") as con:
-                #cur2 = con.cursor()
-
             # Search users table in database to retrieve hashed password corresponding with username
-            # CHANGE BACK TO CUR2 IF SOMETHING BREAKS
             cur.execute('''SELECT pw_hash
                             FROM users
                             WHERE username=?''',
                             (username,))
 
-            # CHANGE BACK TO CUR2 IF SOMETHING BREAKS
             hashed = cur.fetchall()               # Store the hashed password
-            #cur2.close()
             res = str(hashed).strip('[](),\'')     # Strip unnecessary characters off of password, otherwise it will not match in checkpw
 
             # If entered password is successfully matched to hash
@@ -177,10 +170,11 @@ def login():
                                 FROM users
                                 WHERE username=?''',
                                 (username,))
-                id = cur.fetchall()
+                id = cur.fetchone()
                 cur.close()
                 login_user(id, username, user)
-                return render_template('home.html', user=user)
+                return redirect(url_for('home'))
+                #return render_template('home.html', user=user)
             # If entered password does not match hash
             else:
                 cur.close()
@@ -245,9 +239,9 @@ def register():
                         WHERE username=?''',
                         (username,))
         
-        # Create a table in preferences for the user
-        id = cur.fetchone()
+        id = ''.join(cur.fetchone())
 
+        # Create a table in preferences for the user
         cur.execute(''' INSERT INTO preference (user_id)
                         VALUES (?)''',
                         (id))
