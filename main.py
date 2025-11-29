@@ -9,10 +9,10 @@ from register import *
 from find import *
 from user import *
 
-con = sqlite3.connect("data.db")    #Create a connection to the database
-app = Flask(__name__)               #Create a Flask object
+con = sqlite3.connect("data.db")    # Create a connection to the database
+app = Flask(__name__)               # Create a Flask object
 app.config['SECRET_KEY'] = 'placeholder'
-user = User(None, None)
+user = User(None, None)             # Create a blank user object
 
 @app.route('/')
 def home():
@@ -124,15 +124,6 @@ def calc_distance(userCode, trailCode):
     distance *= 0.6213712   # Convert km to mi
     return distance
 
-
-@app.route('/recommend_a_trail')
-def recommend_a_trail():
-    return render_template('rec.html')
-
-@app.route('/saved_trails')
-def saved_trails():
-    return render_template('saved.html')
-
 @app.route('/login', methods=["GET", "POST"])
 def login():
     form = loginForm()
@@ -144,6 +135,7 @@ def login():
         with sqlite3.connect("data.db") as con:
             cur = con.cursor()
 
+        # Search for matching username in the database
         cur.execute(''' SELECT username
                         FROM users
                         WHERE username=?''',
@@ -174,7 +166,6 @@ def login():
                 cur.close()
                 login_user(id, username, user)
                 return redirect(url_for('home'))
-                #return render_template('home.html', user=user)
             # If entered password does not match hash
             else:
                 cur.close()
@@ -201,7 +192,7 @@ def logout():
     user.id = None
     user.username = None
     user.auth = False
-    return render_template('home.html', user=user)
+    return redirect(url_for('home'))
 
 @app.route('/register', methods=["GET", "POST"])
 def register():
@@ -254,6 +245,37 @@ def register():
         return render_template('home.html', user=user)
 
     return render_template('register.html', form=form)
+
+@app.route('/recommend_a_trail')
+def recommend_a_trail():
+    if user.auth == True:
+
+        id = user.id
+
+        with sqlite3.connect('data.db') as con:
+            cur = con.cursor()
+
+        cur.exectute('''SELECT *
+                        FROM preference
+                        WHERE user_id=?''',
+                        (id,))
+        
+        for row in cur:
+            user_id, flow, tech, terr_no, up, down, both, type_no, green, blue, black, diff_no = row
+
+        # Compare statements go here to see what to query for
+        # Then query for it and display results
+
+        return render_template('rec.html')
+    else:
+        return render_template('not_logged.html')
+
+@app.route('/saved_trails')
+def saved_trails():
+    if user.auth == True:
+        return render_template('saved.html')
+    else:
+        return render_template('not_logged.html')
 
 if __name__ == "__main__":
     app.run(debug=True)
