@@ -80,7 +80,6 @@ def find_a_trail():
 
         # If user is logged in, call function to update their preferences
         if user.auth == True:
-            print('This should be working')
             update_prefs(user, terrain, type, difficulty)
 
         return render_template('results.html', trails=passedTrails)
@@ -252,9 +251,12 @@ def recommend_a_trail():
 
         id = user.id
 
+        passedTrails = []   # Empty list to store trails that match criteria
+
         with sqlite3.connect('data.db') as con:
             cur = con.cursor()
 
+        # Query for the user's row in the preference table. 
         cur.exectute('''SELECT *
                         FROM preference
                         WHERE user_id=?''',
@@ -263,10 +265,49 @@ def recommend_a_trail():
         for row in cur:
             user_id, flow, tech, terr_no, up, down, both, type_no, green, blue, black, diff_no = row
 
-        # Compare statements go here to see what to query for
-        # Then query for it and display results
+        # Compare statements for terrain
+        if flow > tech:
+            terrain = 'flow'
+        else:
+            terrain = 'tech'
+        # Compare statements for type
+        if up > down and up > both:
+            type = 'up'
+        elif down > up and down > both:
+            type = 'down'
+        else:
+            type = 'both'
+        # Compate statements for difficulty
+        if green > blue and green > black:
+            difficulty = 'green'
+        elif blue > green and blue > black:
+            difficulty = 'blue'
+        else:
+            difficulty = 'black'
 
-        return render_template('rec.html')
+        cur.exectute('''SELECT *
+                        FROM trails''')
+        
+        # Query for trails based on results
+        for row in cur:
+            id1, name1, loc1, locname1, terrain1, type1, difficulty1, jumps1, drops1, berms1, rolls1, skinnies1 = row
+
+        if terrain == terrain1 and type == type1 and difficulty == difficulty1:
+            # Set image path based on trail difficulty
+            if difficulty1 == 'green':
+                difficulty1 = '/static/images/green.png'
+                altText = 'Green difficulty icon'
+            elif difficulty1 == 'blue':
+                difficulty1 = '/static/images/blue.png'
+                altText = 'Blue difficulty icon'
+            else:
+                difficulty1 = '/static/images/black.png'
+                altText = 'Black difficulty icon'
+
+            trailData = (name1, locname1, difficulty1, loc1, altText)
+            passedTrails.append(trailData)
+
+        return render_template('rec.html', trails=passedTrails)
     else:
         return render_template('not_logged.html')
 
