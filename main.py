@@ -257,10 +257,10 @@ def recommend_a_trail():
             cur = con.cursor()
 
         # Query for the user's row in the preference table. 
-        cur.exectute('''SELECT *
+        cur.execute('''SELECT *
                         FROM preference
                         WHERE user_id=?''',
-                        (id,))
+                        (id))
         
         for row in cur:
             user_id, flow, tech, terr_no, up, down, both, type_no, green, blue, black, diff_no = row
@@ -285,29 +285,30 @@ def recommend_a_trail():
         else:
             difficulty = 'black'
 
-        cur.exectute('''SELECT *
+        cur.execute(''' SELECT *
                         FROM trails''')
         
         # Query for trails based on results
         for row in cur:
             id1, name1, loc1, locname1, terrain1, type1, difficulty1, jumps1, drops1, berms1, rolls1, skinnies1 = row
 
-        if terrain == terrain1 and type == type1 and difficulty == difficulty1:
-            # Set image path based on trail difficulty
-            if difficulty1 == 'green':
-                difficulty1 = '/static/images/green.png'
-                altText = 'Green difficulty icon'
-            elif difficulty1 == 'blue':
-                difficulty1 = '/static/images/blue.png'
-                altText = 'Blue difficulty icon'
-            else:
-                difficulty1 = '/static/images/black.png'
-                altText = 'Black difficulty icon'
+            if terrain == terrain1 and type == type1 and difficulty == difficulty1:
+                # Set image path based on trail difficulty
+                if difficulty1 == 'green':
+                    difficulty1 = '/static/images/green.png'
+                    altText = 'Green difficulty icon'
+                elif difficulty1 == 'blue':
+                    difficulty1 = '/static/images/blue.png'
+                    altText = 'Blue difficulty icon'
+                else:
+                    difficulty1 = '/static/images/black.png'
+                    altText = 'Black difficulty icon'
 
-            trailData = (name1, locname1, difficulty1, loc1, altText)
-            passedTrails.append(trailData)
+                trailData = (name1, locname1, difficulty1, loc1, altText)
+                passedTrails.append(trailData)
+                print(passedTrails)
 
-        return render_template('rec.html', trails=passedTrails)
+        return render_template('recs.html', trails=passedTrails)
     else:
         return render_template('not_logged.html')
 

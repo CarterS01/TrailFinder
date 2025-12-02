@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TrailFinder: Recommend A Trail</title>
+    <link rel="icon" type="image/x-icon" href="/static/images/favicon.ico"/>
+    <link href="static/home.css" rel="stylesheet"/>
+    <link href="static/fonts.css" rel="stylesheet"/>
+</head>
+
+<body>
+    <main>
+        <div class="container">
+            {% if trails: %}
+                <h2>RECOMMENDATIONS:</h2>
+                <hr>
+                {% for x in trails %}
+                    <div class="trail">
+                        <p><u>TRAIL NAME: {{ x[0].upper() }}</u> <img src='{{ x[2] }}' alt='{{ x[4] }}'></p>
+                        <p>LOCATION: {{ x[1].upper() }} ({{ x[3] }})<br></p>
+                    </div>
+                    <hr>
+                {% endfor %}
+                    <div class="note">
+                        <p>TRAIL RECOMMENDATIONS ARE BASED OFF OF PAST SEARCHES. THE MORE SEARCHES YOU PERFORM WHILE LOGGED IN, THE CLOSER RECOMMENDATIONS WILL BE TAILORED TO YOUR PREFERENCES.</p>
+                    </div>
+            {% else: %}
+                <p>NO TRAILS FOUND MATCHING YOUR CRITERIA</p>
+            {% endif %}
+        </div>
+    </main>
+</body>
