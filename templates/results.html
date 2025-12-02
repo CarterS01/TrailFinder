@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <title>TrailFinder: Find A Trail</title>
     <link rel="icon" type="image/x-icon" href="/static/images/favicon.ico"/>
-    <link href="static/home.css" rel="stylesheet"/>
+    <link href="static/results.css" rel="stylesheet"/>
     <link href="static/fonts.css" rel="stylesheet"/>
+    <script src="/scripts/main.js"></script>
 </head>
 
 <body>
@@ -17,8 +18,11 @@
                 {% for x in trails %}
                     <div class="trail">
                         <p><u>TRAIL NAME: {{ x[0].upper() }}</u> <img src='{{ x[3] }}' alt='{{ x[5] }}'></p>
-                        <p>LOCATION: {{ x[1].upper() }} ({{ x[4] }})<br>SCORE: {{ x[2] }}/8<br></p>
+                        <p>LOCATION: {{ x[1].upper() }} ({{ x[4] }})<br>SCORE: {{ x[2] }}/8</p>
                     </div>
+                    <p>
+                        <img src="/static/images/bookmark.png" id="bookmark" onclick="fillMark()">
+                    </p>
                     <hr>
                 {% endfor %}
             {% else: %}

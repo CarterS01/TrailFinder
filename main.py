@@ -93,8 +93,6 @@ def update_prefs(user, terrain, type, difficulty):
 
     id = str(user.id).strip('(,)')   # Convert tuple to string and remove extra characters. I have no idea why this returns as a tuple in the first place
 
-    print(terrain, type, difficulty, id)
-
     # Update preference based on chosen terrain
     cur.execute(''' UPDATE preference
                     SET %s = %s + 1
@@ -306,7 +304,6 @@ def recommend_a_trail():
 
                 trailData = (name1, locname1, difficulty1, loc1, altText)
                 passedTrails.append(trailData)
-                print(passedTrails)
 
         return render_template('recs.html', trails=passedTrails)
     else:

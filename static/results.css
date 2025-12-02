@@ -1,0 +1,49 @@
+body {
+    background-color: #3b4244;
+}
+
+.container {
+    text-align: center;
+    font-family: "Unica One";
+}
+
+.trail {
+    padding: 2%;
+}
+
+.trail img {
+    display: inline;
+    width: .9em;
+    height: .9em;
+    padding: 0%;
+}
+
+h2 {
+    font-size: 350%;
+    margin-top: 1.2em;
+    margin-bottom: 1em;
+    color: white;
+}
+
+p {
+    margin-top: 0%;
+    font-size: 125%;
+    color: white;
+}
+
+hr {
+    height: 4px;
+    background-color: black;
+    border-color: #3b4244;
+    overflow: hidden;
+}
+
+img {
+    display: inline-block;
+    width: 3em;
+    height: 3em;
+}
+
+img:hover {
+    background-color: rgba(255, 255, 255, .3);
+}

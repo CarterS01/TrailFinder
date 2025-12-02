@@ -26,10 +26,6 @@ body {
     margin-bottom:2%;
 }
 
-.trail {
-    padding: 2%;
-}
-
 h1 {
     margin-top: 4%;
     margin-bottom: 0%;
@@ -67,13 +63,6 @@ ul {
 
 ul li {
     float: right;
-}
-
-.trail img {
-    display: inline;
-    width: .9em;
-    height: .9em;
-    padding: 0%;
 }
 
 ul li a {
