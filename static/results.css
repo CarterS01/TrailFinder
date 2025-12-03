@@ -47,3 +47,19 @@ img {
 img:hover {
     background-color: rgba(255, 255, 255, .3);
 }
+
+.entry {
+    height: 5em;
+    width: 20em;
+}
+
+.save {
+    display: inline-block;
+    background-color: #41c4f3;
+    font-family: "Unica One";
+    border-color: white;
+}
+
+.save:hover {
+    background-color: #6ad5fc;
+}

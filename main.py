@@ -8,6 +8,7 @@ from login import *
 from register import *
 from find import *
 from user import *
+from saved import *
 
 con = sqlite3.connect("data.db")    # Create a connection to the database
 app = Flask(__name__)               # Create a Flask object
@@ -248,7 +249,6 @@ def recommend_a_trail():
     if user.auth == True:
 
         id = user.id
-
         passedTrails = []   # Empty list to store trails that match criteria
 
         with sqlite3.connect('data.db') as con:
@@ -305,6 +305,8 @@ def recommend_a_trail():
                 trailData = (name1, locname1, difficulty1, loc1, altText)
                 passedTrails.append(trailData)
 
+        cur.close()
+
         return render_template('recs.html', trails=passedTrails)
     else:
         return render_template('not_logged.html')
@@ -312,7 +314,61 @@ def recommend_a_trail():
 @app.route('/saved_trails')
 def saved_trails():
     if user.auth == True:
-        return render_template('saved.html')
+
+        form = savedForm()
+        id = user.id
+        trails = []
+
+        with sqlite3.connect('data.db') as con:
+            cur = con.cursor()
+
+        # Grab the saved trail IDs for the user
+        cur.execute(''' SELECT *
+                        FROM notes
+                        WHERE user_id=?''',
+                        (id))
+        
+        for row in cur:
+            note_id, trail_id, user_id, note = row
+
+            # New cursor to not overwrite cur, which is in progress???
+            with sqlite3.connect('data.db') as con:
+                cur2 = con.cursor()
+            # Use the IDs to get the trail info and store it to be displayed
+            cur2.execute(''' SELECT *
+                            FROM trails
+                            WHERE id=?''',
+                            (trail_id,))
+            
+            # For each trail retrieved, get info
+            for row in cur2:
+                id1, name, loc, locname, terrain, type, difficulty, jumps, drops, berms, rolls, skinnies = row
+
+                # Set difficulty icon
+                if difficulty == 'green':
+                    difficulty = '/static/images/green.png'
+                    altText = 'Green difficulty icon'
+                elif difficulty == 'blue':
+                    difficulty = '/static/images/blue.png'
+                    altText = 'Blue difficulty icon'
+                else:
+                    difficulty = '/static/images/black.png'
+                    altText = 'Black difficulty icon'
+
+                # Store info in list to be passed to the HTML file
+                trailData = (name, locname, difficulty, loc, altText, note)
+                trails.append(trailData)
+
+            cur2.close()
+
+        if form.validate_on_submit():
+            pass
+
+        #form.note.data = 'text'
+
+        cur.close()
+
+        return render_template('saved.html', trails=trails, form=form)
     else:
         return render_template('not_logged.html')
 

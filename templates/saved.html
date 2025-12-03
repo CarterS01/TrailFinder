@@ -4,4 +4,34 @@
     <meta charset="UTF-8">
     <title>TrailFinder: Saved Trails</title>
     <link rel="icon" type="image/x-icon" href="/static/images/favicon.ico"/>
+    <link href="static/results.css" rel="stylesheet"/>
+    <link href="static/fonts.css" rel="stylesheet"/>
 </head>
+
+<body>
+    <main>
+        <div class="container">
+            <h2>SAVED TRAILS:</h2>
+            <hr>
+            {% for x in trails %}
+                <div class="trail">
+                    <p><u>TRAIL NAME: {{ x[0].upper() }}</u> <img src='{{ x[2] }}' alt='{{ x[4] }}'></p>
+                    <p>LOCATION: {{ x[1].upper() }} ({{ x[3] }})<br></p>
+                    {% if x[5] == None %}
+                        <p>NO EXISTING NOTES FOR THIS TRAIL</p>
+                    {% else %}
+                        <p>NOTES: {{ x[5].upper() }}</p><br>
+                    {% endif %}
+                    <p>
+                        {{ form.note.label }}<br>
+                        {{ form.note(size=20, class='entry', data=x[5]) }}<br>
+                        {{ form.save(class='save') }}
+                    </p>
+                </div>
+                <hr>
+            {% endfor %}
+        </div>
+    </main>
+</body>
+
+<!---Notes stored in x[5]--->

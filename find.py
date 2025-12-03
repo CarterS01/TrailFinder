@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, SelectField, BooleanField, SubmitField
-from wtforms.validators import DataRequired, Length
+from wtforms.validators import DataRequired
 
 class findForm(FlaskForm):
     location = StringField('ZIP CODE', validators=[DataRequired()])
