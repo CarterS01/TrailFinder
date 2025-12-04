@@ -6,6 +6,7 @@
     <link rel="icon" type="image/x-icon" href="/static/images/favicon.ico"/>
     <link href="static/results.css" rel="stylesheet"/>
     <link href="static/fonts.css" rel="stylesheet"/>
+    <script src="/static/main.js"></script>
 </head>
 
 <body>
@@ -13,23 +14,31 @@
         <div class="container">
             <h2>SAVED TRAILS:</h2>
             <hr>
-            {% for x in trails %}
-                <div class="trail">
-                    <p><u>TRAIL NAME: {{ x[0].upper() }}</u> <img src='{{ x[2] }}' alt='{{ x[4] }}'></p>
-                    <p>LOCATION: {{ x[1].upper() }} ({{ x[3] }})<br></p>
-                    {% if x[5] == None %}
-                        <p>NO EXISTING NOTES FOR THIS TRAIL</p>
-                    {% else %}
-                        <p>NOTES: {{ x[5].upper() }}</p><br>
-                    {% endif %}
-                    <p>
-                        {{ form.note.label }}<br>
-                        {{ form.note(size=20, class='entry', data=x[5]) }}<br>
-                        {{ form.save(class='save') }}
-                    </p>
-                </div>
-                <hr>
-            {% endfor %}
+            {% if trails %}
+                {% for x in trails %}
+                    <div class="trail">
+                        <p><u>TRAIL NAME: {{ x[0].upper() }}</u> <img src='{{ x[2] }}' alt='{{ x[4] }}'></p>
+                        <p>LOCATION: {{ x[1].upper() }} ({{ x[3] }})<br></p>
+                        {% if x[5] == None %}
+                            <p>NO EXISTING NOTES FOR THIS TRAIL</p>
+                        {% else %}
+                            <p>NOTES: {{ x[5].upper() }}</p><br>
+                        {% endif %}
+                        <p>
+                            {{ form.note.label }}<br>
+                            {{ form.note(size=20, class='entry', data=x[5]) }}<br>
+                            <!--{{ form.save(class='save') }}-->
+                            <!--<button id="test" class="{{ x[0] }}" onclick="test(this)">SAVE</button>-->
+                            <script>
+                                
+                            </script>
+                        </p>
+                    </div>
+                    <hr>
+                {% endfor %}
+            {% else %}
+                <p>YOU HAVE NOT SAVED ANY TRAILS YET</p>
+            {% endif %}
         </div>
     </main>
 </body>

@@ -1,11 +1,11 @@
 function fillMark() {
-    console.log('linked')
-    if (document.getElementById("bookmark").src == "/static/images/bookmark.png"){
-        console.log('True')
+    if (document.getElementById("bookmark").src.endsWith("/static/images/bookmark.png")){
         document.getElementById("bookmark").src = "/static/images/bookmark_filled.png";
-    } 
-    else {
+    } else {
         document.getElementById("bookmark").src = "/static/images/bookmark.png";
-        console.log('False')
     }
+}
+
+function test(btn) {
+    alert(document.getElementById('test').class);
 }

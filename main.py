@@ -364,8 +364,6 @@ def saved_trails():
         if form.validate_on_submit():
             pass
 
-        #form.note.data = 'text'
-
         cur.close()
 
         return render_template('saved.html', trails=trails, form=form)
