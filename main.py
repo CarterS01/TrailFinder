@@ -1,6 +1,6 @@
 #--- PYTHON MODULES ---
 import sqlite3
-from flask import Flask, render_template, redirect, url_for
+from flask import Flask, render_template, redirect, url_for, jsonify, request
 import bcrypt
 import pgeocode as pgeo
 #--- .py FILES ---
@@ -342,7 +342,7 @@ def saved_trails():
             
             # For each trail retrieved, get info
             for row in cur2:
-                id1, name, loc, locname, terrain, type, difficulty, jumps, drops, berms, rolls, skinnies = row
+                id, name, loc, locname, terrain, type, difficulty, jumps, drops, berms, rolls, skinnies = row
 
                 # Set difficulty icon
                 if difficulty == 'green':
@@ -356,7 +356,7 @@ def saved_trails():
                     altText = 'Black difficulty icon'
 
                 # Store info in list to be passed to the HTML file
-                trailData = (name, locname, difficulty, loc, altText, note)
+                trailData = (name, locname, difficulty, loc, altText, note, id)
                 trails.append(trailData)
 
             cur2.close()
@@ -369,6 +369,27 @@ def saved_trails():
         return render_template('saved.html', trails=trails, form=form)
     else:
         return render_template('not_logged.html')
+
+@app.route('/request', methods=['POST'])
+def save_notes():
+    json_data = request.get_json()
+    id = json_data['id']
+    note = str(json_data['note'])
+    user_id = str(user.id).strip('(,)')
+    print(user_id)
+
+    with sqlite3.connect('data.db') as con:
+        cur = con.cursor()
+
+    cur.execute(''' UPDATE notes
+                    SET note=?
+                    WHERE trail_id=? AND user_id=?''',
+                    (note, id, user_id))
+    con.commit()
+
+    cur.close()
+
+    return jsonify(json_data)
 
 if __name__ == "__main__":
     app.run(debug=True)

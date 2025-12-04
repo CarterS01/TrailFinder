@@ -53,13 +53,13 @@ img:hover {
     width: 20em;
 }
 
-.save {
+button {
     display: inline-block;
     background-color: #41c4f3;
     font-family: "Unica One";
     border-color: white;
 }
 
-.save:hover {
+button:hover {
     background-color: #6ad5fc;
 }

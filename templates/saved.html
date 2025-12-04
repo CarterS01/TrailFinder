@@ -20,19 +20,22 @@
                         <p><u>TRAIL NAME: {{ x[0].upper() }}</u> <img src='{{ x[2] }}' alt='{{ x[4] }}'></p>
                         <p>LOCATION: {{ x[1].upper() }} ({{ x[3] }})<br></p>
                         {% if x[5] == None %}
-                            <p>NO EXISTING NOTES FOR THIS TRAIL</p>
-                        {% else %}
-                            <p>NOTES: {{ x[5].upper() }}</p><br>
-                        {% endif %}
-                        <p>
-                            {{ form.note.label }}<br>
-                            {{ form.note(size=20, class='entry', data=x[5]) }}<br>
-                            <!--{{ form.save(class='save') }}-->
-                            <!--<button id="test" class="{{ x[0] }}" onclick="test(this)">SAVE</button>-->
-                            <script>
-                                
+                            <textarea id="place" placeholder="Enter notes here" rows="5" cols="25" maxlength="255"></textarea>
+                            <script type="text/javascript">
+                                document.getElementById('place').id = '{{ x[6] }}_text';
                             </script>
-                        </p>
+                        {% else %}
+                            <textarea id="place" rows="5" cols="25" maxlength="255">{{ x[5] }}</textarea>
+                            <script type="text/javascript">
+                                document.getElementById('place').id = '{{ x[6] }}_text';
+                            </script>
+                        {% endif %}
+                        <br>
+                        <button id="place" onclick="saveNotes(this)">SAVE</button>
+                        <script type="text/javascript">
+                            document.getElementById('place').id = '{{ x[6] }}';
+                        </script>
+                        
                     </div>
                     <hr>
                 {% endfor %}

@@ -6,6 +6,17 @@ function fillMark() {
     }
 }
 
-function test(btn) {
-    alert(document.getElementById('test').class);
+function saveNotes(btn) {
+    const trail = btn.id;
+    const id = `${trail}_text`;
+    const note = document.getElementById(id).value;
+    const data = { id: trail, note: note }
+    fetch('/request', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    alert('Note successfully saved!')
 }
