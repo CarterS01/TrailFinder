@@ -10,6 +10,7 @@ function fillMark(btn) {
             },
             body: JSON.stringify(data)
         })
+        alert('Trail saved')
 
     } else {
         btn.src = "/static/images/bookmark.png";
@@ -22,6 +23,7 @@ function fillMark(btn) {
             },
             body: JSON.stringify(data)
         })
+        alert('Trail removed')
     }
 }
 
@@ -38,4 +40,18 @@ function saveNotes(btn) {
         body: JSON.stringify(data)
     })
     alert('Note successfully saved!')
+}
+
+function deleteTrail(btn) {
+    const id = btn.id
+    const data = { id: id }
+    fetch('/deleteSaved', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    alert('Trail removed from saved')
+    location.reload()
 }

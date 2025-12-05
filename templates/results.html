@@ -21,7 +21,11 @@
                         <p>LOCATION: {{ x[1].upper() }} ({{ x[4] }})<br>SCORE: {{ x[2] }}/8</p>
                     </div>
                     {% if user.auth == True %}
-                        <img src="/static/images/bookmark.png" id='bookmark' onclick="fillMark(this)">
+                        {% if x[7] == True %}
+                            <img src="/static/images/bookmark_filled.png" id='bookmark' onclick="fillMark(this)">
+                        {% else %}
+                            <img src="/static/images/bookmark.png" id='bookmark' onclick="fillMark(this)">
+                        {% endif %}
                         <script type="text/javascript">
                             document.getElementById('bookmark').id = '{{ x[6] }}';
                         </script>

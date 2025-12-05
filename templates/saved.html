@@ -31,11 +31,15 @@
                             </script>
                         {% endif %}
                         <br>
-                        <button id="place" onclick="saveNotes(this)">SAVE</button>
+                        <button id="place" onclick="saveNotes(this)">SAVE NOTE</button>
                         <script type="text/javascript">
                             document.getElementById('place').id = '{{ x[6] }}';
                         </script>
-                        
+                        <br><br>
+                        <button id="place" onclick="deleteTrail(this)">UNSAVE TRAIL</button>
+                        <script type="text/javascript">
+                            document.getElementById('place').id = '{{ x[6] }}_delete';
+                        </script>
                     </div>
                     <hr>
                 {% endfor %}

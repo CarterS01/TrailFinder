@@ -9,6 +9,7 @@ from register import *
 from find import *
 from user import *
 from saved import *
+from zip import *
 
 con = sqlite3.connect("data.db")    # Create a connection to the database
 app = Flask(__name__)               # Create a Flask object
@@ -34,6 +35,7 @@ def find_a_trail():
         rolls = form.rolls.data
         skinnies = form.skinnies.data
         passedTrails = []    # List that will later store which trails passed the trailscore test
+        saved = False
 
         with sqlite3.connect("data.db") as con:
             cur = con.cursor()
@@ -74,15 +76,38 @@ def find_a_trail():
                 altText = 'Black difficulty icon'
             # Pass zip codes to calc_distance to determine how far they are from each other
             distance = calc_distance(location, loc1)
+
+            # Determine whether the trail is already saved by the user to display the correct bookmark icon
+            if user.auth == True:
+                id = str(user.id).strip('(,)')
+
+                print(id, id1)
+
+                with sqlite3.connect("data.db") as con:
+                    cur2 = con.cursor()
+
+                cur2.execute('''SELECT *
+                                FROM notes
+                                WHERE trail_id=? AND user_id=?''',
+                                (id1, id))
+                
+                if cur2.fetchone():
+                    saved = True
+                else:
+                    saved = False
+
+                cur2.close()
+
             # Adds trail to a list if its trailscore is 6 or more and the trail is within user's specified radius
             if trailscore > 5 and distance < radius:
-                trailData = (name1, locname1, trailscore, difficulty1, loc1, altText, id1)
+                trailData = (name1, locname1, trailscore, difficulty1, loc1, altText, id1, saved)
                 passedTrails.append(trailData)
 
         # If user is logged in, call function to update their preferences
         if user.auth == True:
             update_prefs(user, terrain, type, difficulty)
 
+        cur.close()
         return render_template('results.html', trails=passedTrails, user=user)
     return render_template('find.html', form=form)
 
@@ -244,70 +269,80 @@ def register():
 
     return render_template('register.html', form=form)
 
-@app.route('/recommend_a_trail')
+@app.route('/recommend_a_trail', methods=["GET", "POST"])
 def recommend_a_trail():
+    form = zipForm()
     if user.auth == True:
 
-        id = user.id
-        passedTrails = []   # Empty list to store trails that match criteria
+        if form.validate_on_submit():
+            location = form.location.data
+            radius = float(form.radius.data)
+            id = user.id
+            passedTrails = []   # Empty list to store trails that match criteria
 
-        with sqlite3.connect('data.db') as con:
-            cur = con.cursor()
+            with sqlite3.connect('data.db') as con:
+                cur = con.cursor()
 
-        # Query for the user's row in the preference table. 
-        cur.execute('''SELECT *
-                        FROM preference
-                        WHERE user_id=?''',
-                        (id))
+            # Query for the user's row in the preference table. 
+            cur.execute('''SELECT *
+                            FROM preference
+                            WHERE user_id=?''',
+                            (id))
+            
+            for row in cur:
+                user_id, flow, tech, terr_no, up, down, both, type_no, green, blue, black, diff_no = row
+
+            # Compare statements for terrain
+            if flow > tech:
+                terrain = 'flow'
+            else:
+                terrain = 'tech'
+            # Compare statements for type
+            if up > down and up > both:
+                type = 'up'
+            elif down > up and down > both:
+                type = 'down'
+            else:
+                type = 'both'
+            # Compate statements for difficulty
+            if green > blue and green > black:
+                difficulty = 'green'
+            elif blue > green and blue > black:
+                difficulty = 'blue'
+            else:
+                difficulty = 'black'
+
+            cur.execute(''' SELECT *
+                            FROM trails''')
+            
+            # Query for trails based on results
+            for row in cur:
+                id1, name1, loc1, locname1, terrain1, type1, difficulty1, jumps1, drops1, berms1, rolls1, skinnies1 = row
+
+                if terrain == terrain1 and type == type1 and difficulty == difficulty1:
+                    # Set image path based on trail difficulty
+                    if difficulty1 == 'green':
+                        difficulty1 = '/static/images/green.png'
+                        altText = 'Green difficulty icon'
+                    elif difficulty1 == 'blue':
+                        difficulty1 = '/static/images/blue.png'
+                        altText = 'Blue difficulty icon'
+                    else:
+                        difficulty1 = '/static/images/black.png'
+                        altText = 'Black difficulty icon'
+                    
+                    distance = calc_distance(location, loc1)
+
+                    if distance < radius:
+                        trailData = (name1, locname1, difficulty1, loc1, altText)
+                        passedTrails.append(trailData)
+
+            cur.close()
+
+            return render_template('recs.html', trails=passedTrails)
         
-        for row in cur:
-            user_id, flow, tech, terr_no, up, down, both, type_no, green, blue, black, diff_no = row
+        return render_template('zip.html', form=form)
 
-        # Compare statements for terrain
-        if flow > tech:
-            terrain = 'flow'
-        else:
-            terrain = 'tech'
-        # Compare statements for type
-        if up > down and up > both:
-            type = 'up'
-        elif down > up and down > both:
-            type = 'down'
-        else:
-            type = 'both'
-        # Compate statements for difficulty
-        if green > blue and green > black:
-            difficulty = 'green'
-        elif blue > green and blue > black:
-            difficulty = 'blue'
-        else:
-            difficulty = 'black'
-
-        cur.execute(''' SELECT *
-                        FROM trails''')
-        
-        # Query for trails based on results
-        for row in cur:
-            id1, name1, loc1, locname1, terrain1, type1, difficulty1, jumps1, drops1, berms1, rolls1, skinnies1 = row
-
-            if terrain == terrain1 and type == type1 and difficulty == difficulty1:
-                # Set image path based on trail difficulty
-                if difficulty1 == 'green':
-                    difficulty1 = '/static/images/green.png'
-                    altText = 'Green difficulty icon'
-                elif difficulty1 == 'blue':
-                    difficulty1 = '/static/images/blue.png'
-                    altText = 'Blue difficulty icon'
-                else:
-                    difficulty1 = '/static/images/black.png'
-                    altText = 'Black difficulty icon'
-
-                trailData = (name1, locname1, difficulty1, loc1, altText)
-                passedTrails.append(trailData)
-
-        cur.close()
-
-        return render_template('recs.html', trails=passedTrails)
     else:
         return render_template('not_logged.html')
 
@@ -392,26 +427,41 @@ def save_notes():
 @app.route('/saveTrail', methods=['POST'])
 def save_trail():
     json_data = request.get_json()
-    id = int(json_data['id'])
+    id = json_data['id']
     add = json_data['add']
-    user_id = int(str(user.id).strip('(,)'))
+    user_id = str(user.id).strip('(,)')
 
     print(f'Trail ID: {id} | User ID: {user_id} | Add: {add}')
     with sqlite3.connect('data.db') as con:
         cur = con.cursor()
 
     if add == True:
-        print('add')
-        ('''INSERT INTO notes(trail_id, user_id)
+        cur.execute('''INSERT INTO notes(trail_id, user_id)
             VALUES(?,?)''',
             (id, user_id))
         con.commit()
     else:
-        print('don\'t add')
-        ('''DELETE FROM notes
+        cur.execute('''DELETE FROM notes
             WHERE trail_id=? AND user_id=?''',
             (id, user_id))
         con.commit()
+
+    cur.close()
+    return jsonify(json_data)
+
+@app.route('/deleteSaved', methods=['POST'])
+def unsave_trail():
+    json_data = request.get_json()
+    id = json_data['id'].strip('_delete')
+    user_id = str(user.id).strip('(,)')
+
+    with sqlite3.connect('data.db') as con:
+        cur = con.cursor()
+
+    cur.execute(''' DELETE FROM notes
+                    WHERE trail_id=? AND user_id=?''',
+                    (id, user_id))
+    con.commit()
 
     cur.close()
     return jsonify(json_data)
