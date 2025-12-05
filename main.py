@@ -76,14 +76,14 @@ def find_a_trail():
             distance = calc_distance(location, loc1)
             # Adds trail to a list if its trailscore is 6 or more and the trail is within user's specified radius
             if trailscore > 5 and distance < radius:
-                trailData = (name1, locname1, trailscore, difficulty1, loc1, altText)
+                trailData = (name1, locname1, trailscore, difficulty1, loc1, altText, id1)
                 passedTrails.append(trailData)
 
         # If user is logged in, call function to update their preferences
         if user.auth == True:
             update_prefs(user, terrain, type, difficulty)
 
-        return render_template('results.html', trails=passedTrails)
+        return render_template('results.html', trails=passedTrails, user=user)
     return render_template('find.html', form=form)
 
 # Function to update user preferences based on their Find A Trail searches
@@ -370,13 +370,12 @@ def saved_trails():
     else:
         return render_template('not_logged.html')
 
-@app.route('/request', methods=['POST'])
+@app.route('/saveNote', methods=['POST'])
 def save_notes():
     json_data = request.get_json()
     id = json_data['id']
     note = str(json_data['note'])
     user_id = str(user.id).strip('(,)')
-    print(user_id)
 
     with sqlite3.connect('data.db') as con:
         cur = con.cursor()
@@ -388,7 +387,33 @@ def save_notes():
     con.commit()
 
     cur.close()
+    return jsonify(json_data)
 
+@app.route('/saveTrail', methods=['POST'])
+def save_trail():
+    json_data = request.get_json()
+    id = int(json_data['id'])
+    add = json_data['add']
+    user_id = int(str(user.id).strip('(,)'))
+
+    print(f'Trail ID: {id} | User ID: {user_id} | Add: {add}')
+    with sqlite3.connect('data.db') as con:
+        cur = con.cursor()
+
+    if add == True:
+        print('add')
+        ('''INSERT INTO notes(trail_id, user_id)
+            VALUES(?,?)''',
+            (id, user_id))
+        con.commit()
+    else:
+        print('don\'t add')
+        ('''DELETE FROM notes
+            WHERE trail_id=? AND user_id=?''',
+            (id, user_id))
+        con.commit()
+
+    cur.close()
     return jsonify(json_data)
 
 if __name__ == "__main__":

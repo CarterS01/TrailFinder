@@ -20,9 +20,12 @@
                         <p><u>TRAIL NAME: {{ x[0].upper() }}</u> <img src='{{ x[3] }}' alt='{{ x[5] }}'></p>
                         <p>LOCATION: {{ x[1].upper() }} ({{ x[4] }})<br>SCORE: {{ x[2] }}/8</p>
                     </div>
-                    <p>
-                        <img src="/static/images/bookmark.png" id="bookmark" onclick="fillMark()">
-                    </p>
+                    {% if user.auth == True %}
+                        <img src="/static/images/bookmark.png" id='bookmark' onclick="fillMark(this)">
+                        <script type="text/javascript">
+                            document.getElementById('bookmark').id = '{{ x[6] }}';
+                        </script>
+                    {% endif %}
                     <hr>
                 {% endfor %}
             {% else: %}

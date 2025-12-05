@@ -1,8 +1,27 @@
-function fillMark() {
-    if (document.getElementById("bookmark").src.endsWith("/static/images/bookmark.png")){
-        document.getElementById("bookmark").src = "/static/images/bookmark_filled.png";
+function fillMark(btn) {
+    if (btn.src.endsWith("/static/images/bookmark.png")){
+        btn.src = "/static/images/bookmark_filled.png";
+        const id = btn.id;
+        const data = { id: id, add: true }
+        fetch('saveTrail', {
+            method: 'POST',
+            headers: {
+                'Content-Type' : 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+
     } else {
-        document.getElementById("bookmark").src = "/static/images/bookmark.png";
+        btn.src = "/static/images/bookmark.png";
+        const id = btn.id;
+        const data = { id: id, add: false };
+        fetch('saveTrail', {
+            method: 'POST',
+            headers: {
+                'Content-Type' : 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
     }
 }
 
@@ -11,7 +30,7 @@ function saveNotes(btn) {
     const id = `${trail}_text`;
     const note = document.getElementById(id).value;
     const data = { id: trail, note: note }
-    fetch('/request', {
+    fetch('/saveNote', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
